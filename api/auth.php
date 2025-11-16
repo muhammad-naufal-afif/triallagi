@@ -13,6 +13,7 @@ if (isset($data['username']) && isset($data['password'])) {
     $admin = $stmt->fetch(PDO::FETCH_ASSOC);
 
     // Verifikasi password
+    // Kembalikan ini
     if ($admin && password_verify($password, $admin['password'])) {
         $_SESSION['admin_logged_in'] = true;
         $_SESSION['admin_id'] = $admin['id_admin'];
