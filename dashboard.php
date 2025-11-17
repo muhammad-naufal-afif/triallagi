@@ -11,7 +11,7 @@ if (!isset($_SESSION['admin_logged_in'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Admin - Pembukuan</title>
+    <title>Dashboard Admin - Harisco Offset</title>
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
@@ -21,7 +21,7 @@ if (!isset($_SESSION['admin_logged_in'])) {
         
         <nav class="sidebar">
             <div class="sidebar-header">
-                <h3>Pembukuan</h3>
+                <h3>Harisco Offset</h3>
             </div>
             <ul>
                 <li class="active"><a href="#dashboard"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
@@ -230,6 +230,34 @@ if (!isset($_SESSION['admin_logged_in'])) {
                 
                 <button type="submit" class="btn">Simpan Perubahan</button>
             </form>
+        </div>
+    </div>
+    <div id="editPelangganModal" class="modal-overlay" style="display:none;">
+        <div class="modal-content">
+            <span class="modal-close" id="pelangganModalCloseBtn">&times;</span>
+            <h3>Edit Data Pelanggan</h3>
+            
+            <form id="formEditPelanggan" class="form-grid">
+                <input type="hidden" id="edit_id_pelanggan">
+                <div class="input-group">
+                    <label for="edit_nama_pelanggan">Nama Pelanggan</label>
+                    <input type="text" id="edit_nama_pelanggan" required>
+                </div>
+                <div class="input-group">
+                    <label for="edit_nomor_hp">Nomor HP</label>
+                    <input type="text" id="edit_nomor_hp">
+                </div>
+                <button type="submit" class="btn">Simpan Perubahan</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="trackRecordModal" class="modal-overlay" style="display:none;">
+        <div class="modal-content modal-lg">
+            <span class="modal-close" id="trackRecordModalCloseBtn">&times;</span>
+            <h3 id="trackRecordHeader">Track Record Pesanan</h3>
+            <div class="table-container" id="trackRecordContent">
+                </div>
         </div>
     </div>
     </body>

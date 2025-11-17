@@ -109,6 +109,16 @@ function initDashboard() {
     document.getElementById('formEditTransaksi').addEventListener('submit', handleUpdateForm);
     // Juga tambahkan listener untuk input harga di modal
     document.getElementById('edit_harga').addEventListener('input', (e) => formatInputRupiah(e.target));
+
+    document.getElementById('pelangganModalCloseBtn').addEventListener('click', closeEditPelangganModal);
+    document.getElementById('formEditPelanggan').addEventListener('submit', handleUpdatePelanggan);
+    document.getElementById('trackRecordModalCloseBtn').addEventListener('click', closeTrackRecordModal);
+    document.getElementById('editPelangganModal').addEventListener('click', (e) => {
+        if (e.target.id === 'editPelangganModal') closeEditPelangganModal();
+    });
+    document.getElementById('trackRecordModal').addEventListener('click', (e) => {
+        if (e.target.id === 'trackRecordModal') closeTrackRecordModal();
+    });
 }
 
 // Navigasi Halaman
@@ -178,7 +188,7 @@ async function loadBulan() {
                 <td>${b.nama_bulan}</td>
                 <td>${b.tahun}</td>
                 <td>${b.status === 'aktif' ? 'Aktif' : 'Nonaktif'}</td>
-                <td>
+                <td class="button-container">
                     <button class="btn btn-aksi" onclick="handleSetBulanAktif(${b.id_bulan}, '${b.nama_bulan}', '${b.tahun}')">Set Aktif</button>
                     <button class="btn-aksi btn-aksi-danger" onclick="handleHapusBulan(${b.id_bulan})">Hapus</button>
                 </td>
@@ -400,12 +410,18 @@ async function loadPelanggan() {
     const data = await response.json();
     const tbody = document.getElementById('tabelPelanggan').querySelector('tbody');
     tbody.innerHTML = '';
+
     data.forEach(p => {
+        // Kita gunakan backtick (`) untuk string nama agar bisa lolos di 'onclick'
+        const namaPelanggan = `\`${p.nama_pelanggan}\``;
+        
         tbody.innerHTML += `
             <tr>
                 <td>${p.nama_pelanggan}</td>
                 <td>${p.nomor_hp}</td>
                 <td>
+                    <button class="btn btn-aksi btn-secondary" onclick="openTrackRecordModal(${p.id_pelanggan}, ${namaPelanggan})">Pesanan</button>
+                    <button class="btn btn-aksi" onclick="openEditPelangganModal(${p.id_pelanggan})">Edit</button>
                     <button class="btn-aksi btn-aksi-danger" onclick="handleHapusPelanggan(${p.id_pelanggan})">Hapus</button>
                 </td>
             </tr>`;
@@ -430,6 +446,95 @@ async function handleHapusPelanggan(id) {
     if (!confirm('Yakin ingin menghapus pelanggan ini?')) return;
     await fetch(`api/pelanggan_crud.php?id_pelanggan=${id}`, { method: 'DELETE' });
     loadPelanggan();
+}
+
+// --- FUNGSI BARU UNTUK EDIT PELANGGAN ---
+function closeEditPelangganModal() {
+    document.getElementById('editPelangganModal').style.display = 'none';
+}
+
+async function openEditPelangganModal(id) {
+    const response = await fetch(`api/pelanggan_crud.php?id_pelanggan=${id}`);
+    const data = await response.json();
+
+    document.getElementById('edit_id_pelanggan').value = data.id_pelanggan;
+    document.getElementById('edit_nama_pelanggan').value = data.nama_pelanggan;
+    document.getElementById('edit_nomor_hp').value = data.nomor_hp;
+    document.getElementById('editPelangganModal').style.display = 'flex';
+}
+
+async function handleUpdatePelanggan(e) {
+    e.preventDefault();
+    const data = {
+        id_pelanggan: document.getElementById('edit_id_pelanggan').value,
+        nama_pelanggan: document.getElementById('edit_nama_pelanggan').value,
+        nomor_hp: document.getElementById('edit_nomor_hp').value,
+    };
+    await fetch('api/pelanggan_crud.php', {
+        method: 'POST',
+        body: JSON.stringify(data)
+    });
+    closeEditPelangganModal();
+    loadPelanggan();
+}
+
+// --- FUNGSI BARU UNTUK TRACK RECORD ---
+function closeTrackRecordModal() {
+    document.getElementById('trackRecordModal').style.display = 'none';
+}
+
+async function openTrackRecordModal(id, nama) {
+    document.getElementById('trackRecordHeader').textContent = `Track Record Pesanan: ${nama}`;
+    const contentDiv = document.getElementById('trackRecordContent');
+    contentDiv.innerHTML = '<p>Memuat data...</p>';
+    document.getElementById('trackRecordModal').style.display = 'flex';
+
+    const response = await fetch(`api/track_record.php?id_pelanggan=${id}`);
+    const data = await response.json();
+
+    if (data.length === 0) {
+        contentDiv.innerHTML = '<p>Pelanggan ini belum memiliki riwayat pesanan.</p>';
+        return;
+    }
+
+    let tableHTML = `
+        <table>
+            <thead>
+                <tr>
+                    <th>Tanggal Pesan</th>
+                    <th>Bulan/Tahun</th>
+                    <th>Jenis Pesanan</th>
+                    <th>Jumlah</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+    let totalOmset = 0;
+    data.forEach(p => {
+        totalOmset += parseFloat(p.total);
+        tableHTML += `
+            <tr>
+                <td>${p.tanggal}</td>
+                <td>${p.nama_bulan} ${p.tahun}</td>
+                <td>${p.jenis_pesanan}</td>
+                <td>${p.jumlah}</td>
+                <td>${formatRupiah(p.total)}</td>
+            </tr>
+        `;
+    });
+    
+    tableHTML += `
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4"><strong>Total Omset dari Pelanggan ini</strong></td>
+                    <td><strong>${formatRupiah(totalOmset)}</strong></td>
+                </tr>
+            </tfoot>
+        </table>
+    `;
+    contentDiv.innerHTML = tableHTML;
 }
 
 // --- KELOLA PESANAN ---
@@ -521,4 +626,6 @@ window.handleHapusBulan = handleHapusBulan;
 window.handleSetBulanAktif = handleSetBulanAktif;
 window.handleHapusTransaksi = handleHapusTransaksi;
 window.handleHapusPelanggan = handleHapusPelanggan;
-window.openEditModal = openEditModal; // <--- PENTING
+window.openEditModal = openEditModal;
+window.openEditPelangganModal = openEditPelangganModal;
+window.openTrackRecordModal = openTrackRecordModal;

@@ -432,3 +432,13 @@ tfoot td {
 .modal-content .form-grid .input-group {
     margin-bottom: 1rem;
 }
+
+/* --- Styling untuk Modal Track Record --- */
+.modal-content.modal-lg {
+    max-width: 800px;
+    /* Buat modal lebih lebar */
+}
+
+#trackRecordContent table {
+    margin-top: 0;
+}
