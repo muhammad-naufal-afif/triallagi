@@ -100,6 +100,35 @@ function initDashboard() {
     document.getElementById('trackRecordModal').addEventListener('click', (e) => {
         if (e.target.id === 'trackRecordModal') closeTrackRecordModal();
     });
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.createElement('div');
+    overlay.className = 'sidebar-overlay';
+    document.body.appendChild(overlay);
+    if (sidebarToggle) {
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('show');
+            overlay.classList.toggle('show');
+        });
+    }
+
+    // Saat layar gelap diklik (tutup sidebar)
+    overlay.addEventListener('click', () => {
+        sidebar.classList.remove('show');
+        overlay.classList.remove('show');
+    });
+    const sidebarLinks = document.querySelectorAll('.sidebar ul li a');
+    sidebarLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            // Cek apakah sedang di tampilan mobile
+            if (window.innerWidth <= 768) {
+                sidebar.classList.remove('show');
+                overlay.classList.remove('show');
+            }
+        });
+    });
+    setupNavigation();
+    loadActiveBulan();
 }
 
 // Navigasi Halaman
