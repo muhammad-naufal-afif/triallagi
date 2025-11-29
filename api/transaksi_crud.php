@@ -1,10 +1,10 @@
 <?php
-// Sesi 2: API untuk CRUD Transaksi (VERSI LENGKAP DENGAN EDIT)
+// API untuk CRUD Transaksi 
 require 'config.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
 $id_bulan = $_SESSION['active_bulan_id'] ?? null;
-$type = $_GET['type'] ?? ''; // 'pendapatan' atau 'pengeluaran'
+$type = $_GET['type'] ?? ''; 
 
 if (empty($type) || ($type !== 'pendapatan' && $type !== 'pengeluaran')) {
     json_response(['error' => 'Tipe transaksi tidak valid.'], 400);
@@ -15,14 +15,14 @@ $id_column = ($type == 'pendapatan') ? 'id_pendapatan' : 'id_pengeluaran';
 switch ($method) {
     case 'GET':
         if (!empty($_GET['id'])) {
-            // FITUR BARU: Ambil satu data untuk modal edit
+            // Ambil satu data untuk modal edit
             $id = $_GET['id'];
             $stmt = $pdo->prepare("SELECT * FROM $type WHERE $id_column = ?");
             $stmt->execute([$id]);
             $data = $stmt->fetch(PDO::FETCH_ASSOC);
             json_response($data);
         } else {
-            // Fitur lama: Ambil semua data untuk tabel
+            // Ambil semua data untuk tabel
             if (!$id_bulan) {
                 json_response(['error' => 'Bulan aktif belum dipilih.'], 400);
             }
@@ -37,7 +37,7 @@ switch ($method) {
         $data = json_decode(file_get_contents('php://input'), true);
 
         if (isset($data['id_transaksi'])) {
-            // FITUR BARU: Update data yang ada
+            // Update data yang ada
             $total = $data['jumlah'] * $data['harga'];
             $id_transaksi = $data['id_transaksi'];
 
@@ -53,7 +53,7 @@ switch ($method) {
             json_response(['success' => true, 'message' => 'Data berhasil diperbarui.']);
 
         } else {
-            // Fitur lama: Tambah data baru
+            // Tambah data baru
             if (!$id_bulan) {
                 json_response(['error' => 'Bulan aktif belum dipilih.'], 400);
             }

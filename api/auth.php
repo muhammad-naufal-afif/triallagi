@@ -1,5 +1,5 @@
 <?php
-// Sesi 2: API untuk Autentikasi (Login)
+// API untuk Autentikasi (Login)
 require 'config.php';
 
 $data = json_decode(file_get_contents('php://input'), true);
@@ -13,7 +13,6 @@ if (isset($data['username']) && isset($data['password'])) {
     $admin = $stmt->fetch(PDO::FETCH_ASSOC);
 
     // Verifikasi password
-    // Kembalikan ini
     if ($admin && password_verify($password, $admin['password'])) {
         $_SESSION['admin_logged_in'] = true;
         $_SESSION['admin_id'] = $admin['id_admin'];

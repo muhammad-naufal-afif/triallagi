@@ -1,5 +1,5 @@
 <?php
-// API BARU: Khusus untuk mengambil track record pesanan per pelanggan
+// mengambil track record pesanan per pelanggan
 require 'config.php';
 
 if (empty($_GET['id_pelanggan'])) {
@@ -8,8 +8,7 @@ if (empty($_GET['id_pelanggan'])) {
 
 $id_pelanggan = $_GET['id_pelanggan'];
 
-// Query ini mengambil SEMUA pesanan pelanggan,
-// dan MENGGABUNGKAN (JOIN) nama bulan dari tabel 'bulan'
+
 $stmt = $pdo->prepare("
     SELECT 
         p.tanggal, 

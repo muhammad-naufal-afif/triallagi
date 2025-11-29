@@ -1,12 +1,8 @@
-/* Import Font (Opsional) */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
 
-/* Variabel Warna */
 :root {
     --color-primary: #4CAF50;
-    /* Hijau */
     --color-primary-light: #E8F5E9;
-    /* Hijau Kemudaan */
     --color-white: #FFFFFF;
     --color-dark: #333;
     --color-grey: #f4f4f4;
@@ -22,7 +18,7 @@ body {
     color: var(--color-dark);
 }
 
-/* --- Halaman Login --- */
+
 .login-body {
     display: flex;
     justify-content: center;
@@ -62,7 +58,6 @@ body {
     border: 1px solid #ddd;
     border-radius: var(--border-radius);
     box-sizing: border-box;
-    /* Menghindari overflow */
 }
 
 .btn {
@@ -94,10 +89,9 @@ body {
     min-height: 100vh;
 }
 
-/* Navigasi Samping */
+
 .sidebar {
     width: 240px;
-    /* Lebar normal */
     background-color: var(--color-dark);
     color: var(--color-white);
     transition: width 0.3s ease;
@@ -129,13 +123,11 @@ body {
     text-decoration: none;
     transition: background-color 0.3s ease;
     white-space: nowrap;
-    /* Mencegah text wrap */
 }
 
 .sidebar ul li a i {
     margin-right: 1rem;
     width: 20px;
-    /* Jaga ikon tetap rapi */
     text-align: center;
 }
 
@@ -144,18 +136,15 @@ body {
     background-color: var(--color-primary);
 }
 
-/* Style Compact (saat di-hover atau di layar kecil) */
-/* Untuk versi 'compact' yang sebenarnya, kita perlu JS, tapi ini adalah versi 'narrow' */
+
 @media (max-width: 768px) {
     .sidebar {
         width: 70px;
-        /* Lebar compact */
     }
 
     .sidebar-header h3,
     .sidebar ul li a span {
         display: none;
-        /* Sembunyikan teks */
     }
 
     .sidebar ul li a {
@@ -168,7 +157,7 @@ body {
     }
 
     .main-content {
-        /* margin-left: 70px; */
+        /* margin-left: 70px;  */
     }
 }
 
@@ -177,8 +166,7 @@ body {
 .main-content {
     flex-grow: 1;
     background-color: var(--color-white);
-    /* margin-left: 240px; */
-    /* Sesuaikan dengan lebar sidebar */
+    /* margin-left: 240px;  */
     transition: margin-left 0.3s ease;
 }
 
@@ -229,18 +217,16 @@ body {
     color: var(--color-dark);
 }
 
-/* Warna khusus untuk kartu */
+
 .card:nth-child(2) {
     border-left-color: #F44336;
-    /* Merah untuk Pengeluaran */
 }
 
 .card:nth-child(3) {
     border-left-color: #2196F3;
-    /* Biru untuk Sisa */
 }
 
-/* Area Konten (untuk Sesi 2) */
+/* Area Konten  */
 .content-section {
     padding: 1.5rem;
     margin: 1.5rem;
@@ -249,7 +235,7 @@ body {
     box-shadow: var(--shadow);
 }
 
-/* --- Sesi 2: Form & Table Styling --- */
+/* ---  Form & Table Styling --- */
 .form-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -280,13 +266,6 @@ body {
     padding: 0.75rem 1.5rem;
 }
 
-.btn-secondary {
-    background-color: var(--color-grey-dark);
-}
-
-.btn-secondary:hover {
-    background-color: #555;
-}
 
 .btn-danger {
     background-color: #D32F2F;
@@ -295,6 +274,16 @@ body {
 .btn-danger:hover {
     background-color: #C62828;
 }
+
+
+.btn-secondary {
+    background-color: var(--color-grey-dark);
+}
+
+.btn-secondary:hover {
+    background-color: #555;
+}
+
 
 .table-container {
     overflow-x: auto;
@@ -321,20 +310,6 @@ table th {
 
 table tr:hover {
     background-color: #f9f9f9;
-}
-
-.btn-aksi {
-    padding: 0.3rem 0.6rem;
-    font-size: 0.8rem;
-    margin-right: 5px;
-}
-
-.btn-aksi-danger {
-    background-color: #F44336;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
 }
 
 /* Kolom Transaksi */
@@ -385,7 +360,7 @@ tfoot td {
     color: var(--color-dark);
 }
 
-/* --- Styling untuk Modal Edit --- */
+/* --- Styling Modal Edit --- */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -423,7 +398,7 @@ tfoot td {
     color: var(--color-primary);
 }
 
-/* Atur ulang grid form di dalam modal */
+
 .modal-content .form-grid {
     grid-template-columns: 1fr;
     gap: 0;
@@ -433,12 +408,62 @@ tfoot td {
     margin-bottom: 1rem;
 }
 
-/* --- Styling untuk Modal Track Record --- */
+/* --- Styling  Modal Track Record --- */
 .modal-content.modal-lg {
     max-width: 800px;
-    /* Buat modal lebih lebar */
 }
 
 #trackRecordContent table {
     margin-top: 0;
+}
+
+
+.btn-aksi {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.8rem;
+    margin: 0;
+    /* Biarkan container yang atur margin */
+    border: none;
+    border-radius: var(--border-radius);
+    /* Radius normal, tidak menyatu */
+    cursor: pointer;
+    color: var(--color-white);
+    background-color: var(--color-primary);
+    /* Default hijau */
+    transition: background-color 0.3s ease;
+    text-align: center;
+    min-width: 60px;
+    /* Biar ukurannya sama */
+}
+
+.btn-aksi:hover {
+    background-color: #45a049;
+}
+
+/* Tombol Hapus (Merah) */
+.btn-aksi.btn-aksi-danger {
+    background-color: #F44336;
+}
+
+.btn-aksi.btn-aksi-danger:hover {
+    background-color: #D32F2F;
+}
+
+/* Tombol Edit/Pesanan (Abu-abu) */
+/* .btn-secondary sudah ada, kita tambahkan .btn-aksi.btn-secondary */
+.btn-aksi.btn-secondary {
+    background-color: var(--color-grey-dark);
+}
+
+.btn-aksi.btn-secondary:hover {
+    background-color: #555;
+}
+
+/* Kontainer yang menampung tombol-tombol */
+.button-container {
+    display: flex;
+    flex-direction: row;
+    /* Berjajar ke samping */
+    gap: 5px;
+    /* Ini "jarak" yang kamu minta */
 }

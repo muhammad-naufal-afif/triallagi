@@ -1,5 +1,5 @@
 <?php
-// Sesi 2: API untuk Ekspor Data (VERSI DENGAN TOTAL)
+// API untuk Ekspor Data 
 require 'config.php';
 
 if (!isset($_SESSION['active_bulan_id'])) {
@@ -37,10 +37,10 @@ while ($row = $stmt_pendapatan->fetch(PDO::FETCH_ASSOC)) {
 $stmt_total_pendapatan = $pdo->prepare("SELECT SUM(total) AS total FROM pendapatan WHERE id_bulan = ?");
 $stmt_total_pendapatan->execute([$id_bulan]);
 $total_pendapatan = $stmt_total_pendapatan->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
-fputcsv($output, ['']); // Spasi
+fputcsv($output, ['']); 
 // Menambahkan kolom kosong agar 'Jumlah Total' sejajar
 fputcsv($output, ['', '', '', 'Jumlah Total Pendapatan:', $total_pendapatan]); 
-fputcsv($output, ['']); // Spasi
+fputcsv($output, ['']); 
 
 // --- PENGELUARAN ---
 fputcsv($output, ['--- DATA PENGELUARAN ---']);
@@ -57,10 +57,10 @@ while ($row = $stmt_pengeluaran->fetch(PDO::FETCH_ASSOC)) {
 $stmt_total_pengeluaran = $pdo->prepare("SELECT SUM(total) AS total FROM pengeluaran WHERE id_bulan = ?");
 $stmt_total_pengeluaran->execute([$id_bulan]);
 $total_pengeluaran = $stmt_total_pengeluaran->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
-fputcsv($output, ['']); // Spasi
+fputcsv($output, ['']); 
 // Menambahkan kolom kosong agar 'Jumlah Total' sejajar
 fputcsv($output, ['', '', '', 'Jumlah Total Pengeluaran:', $total_pengeluaran]);
-fputcsv($output, ['']); // Spasi
+fputcsv($output, ['']); 
 
 // --- SISA UANG (BARU) ---
 $sisa_uang = $total_pendapatan - $total_pengeluaran;

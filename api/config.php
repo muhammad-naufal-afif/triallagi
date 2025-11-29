@@ -1,5 +1,5 @@
 <?php
-// Sesi 2: File Konfigurasi Database
+// File Konfigurasi Database
 
 // Mulai session di file config agar tersedia di semua API
 if (session_status() === PHP_SESSION_NONE) {
@@ -7,8 +7,8 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 $db_host = 'localhost';
-$db_user = 'root'; // Ganti dengan username database Anda
-$db_pass = '';     // Ganti dengan password database Anda
+$db_user = 'root'; 
+$db_pass = '';     
 $db_name = 'db_pembukuan';
 
 try {

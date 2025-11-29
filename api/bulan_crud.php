@@ -1,5 +1,5 @@
 <?php
-// Sesi 2: API untuk CRUD Bulan
+// API untuk CRUD Bulan
 require 'config.php';
 
 $method = $_SERVER['REQUEST_METHOD'];

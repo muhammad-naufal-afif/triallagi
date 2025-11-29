@@ -1,21 +1,15 @@
-// Sesi 2: File JavaScript Utama (VERSI FINAL SUDAH DIPERBAIKI SEMUA)
 document.addEventListener("DOMContentLoaded", () => {
-    
-    // Cek di halaman mana kita berada
     const loginForm = document.getElementById("loginForm");
     
     if (loginForm) {
-        // --- LOGIKA HALAMAN LOGIN ---
         loginForm.addEventListener("submit", handleLogin);
     } else {
-        // --- LOGIKA HALAMAN DASHBOARD ---
         initDashboard();
     }
 });
 
-// ===================================
-// FUNGSI LOGIN
-// ===================================
+
+//  LOGIN
 async function handleLogin(e) {
     e.preventDefault();
     const username = document.getElementById("username").value;
@@ -42,15 +36,12 @@ async function handleLogin(e) {
 }
 
 
-// ===================================
-// FUNGSI DASHBOARD
-// ===================================
-
+//  DASHBOARD
 let activeBulanId = null;
-let activeBulanStr = null; // UNTUK FIX TANGGAL
-let activeTahunStr = null; // UNTUK FIX TANGGAL
+let activeBulanStr = null; 
+let activeTahunStr = null; 
 
-// Fungsi helper format Rupiah
+// format Rupiah
 const formatRupiah = (number) => {
     return new Intl.NumberFormat('id-ID', {
         style: 'currency',
@@ -59,47 +50,39 @@ const formatRupiah = (number) => {
     }).format(number);
 };
 
-// FUNGSI BARU UNTUK FIX INPUT HARGA
+// FUNGSI INPUT HARGA
 function formatInputRupiah(inputElement) {
     let value = inputElement.value;
-    // 1. Hapus semua karakter non-angka
     let number_string = value.replace(/[^\d]/g, '').toString();
-    
-    // 2. Cek jika kosong
     if(number_string === "") {
         inputElement.value = "";
         return;
     }
-
-    // 3. Buat format angka (misal: 1.000.000)
+    // format angka 
     let formatted = new Intl.NumberFormat('id-ID').format(number_string);
     
-    // 4. Setel kembali nilainya ke input
+    // Setel kembali nilainya ke input
     inputElement.value = formatted;
 }
 
 // Fungsi inisialisasi dashboard
 function initDashboard() {
-    // 1. Setup Navigasi Sidebar
+    // Setup Navigasi Sidebar
     setupNavigation();
     
-    // 2. Load bulan aktif saat ini
+    // Load bulan aktif saat ini
     loadActiveBulan();
 
-    // 3. Setup Event Listeners untuk semua form
+    // Setup Event Listeners untuk semua form
     document.getElementById('formTambahBulan').addEventListener('submit', handleTambahBulan);
     document.getElementById('formTambahPendapatan').addEventListener('submit', (e) => handleTambahTransaksi(e, 'pendapatan'));
     document.getElementById('formTambahPengeluaran').addEventListener('submit', (e) => handleTambahTransaksi(e, 'pengeluaran'));
     document.getElementById('formTambahPelanggan').addEventListener('submit', handleTambahPelanggan);
     document.getElementById('formTambahPesanan').addEventListener('submit', handleTambahPesanan);
     document.getElementById('btnExportCSV').addEventListener('click', () => handleExport('csv'));
-
-    // EVENT LISTENER BARU UNTUK FIX INPUT HARGA
     document.getElementById('pendapatan_harga').addEventListener('input', (e) => formatInputRupiah(e.target));
     document.getElementById('pengeluaran_harga').addEventListener('input', (e) => formatInputRupiah(e.target));
     document.getElementById('pesanan_harga').addEventListener('input', (e) => formatInputRupiah(e.target));
-
-    // EVENT LISTENER UNTUK MODAL EDIT
     document.getElementById('modalCloseBtn').addEventListener('click', closeEditModal);
     document.getElementById('editModal').addEventListener('click', (e) => {
         if (e.target.id === 'editModal') {
@@ -107,9 +90,7 @@ function initDashboard() {
         }
     });
     document.getElementById('formEditTransaksi').addEventListener('submit', handleUpdateForm);
-    // Juga tambahkan listener untuk input harga di modal
     document.getElementById('edit_harga').addEventListener('input', (e) => formatInputRupiah(e.target));
-
     document.getElementById('pelangganModalCloseBtn').addEventListener('click', closeEditPelangganModal);
     document.getElementById('formEditPelanggan').addEventListener('submit', handleUpdatePelanggan);
     document.getElementById('trackRecordModalCloseBtn').addEventListener('click', closeTrackRecordModal);
@@ -161,15 +142,15 @@ function setupNavigation() {
     if(dashboardMetric) dashboardMetric.style.display = 'grid';
 }
 
-// --- KELOLA BULAN ---
+// KELOLA BULAN
 async function loadActiveBulan() {
     const response = await fetch('api/bulan_crud.php?action=get_active');
     const data = await response.json();
     
     if (data && data.id_bulan) {
         activeBulanId = data.id_bulan;
-        activeBulanStr = data.nama_bulan; // <-- PERBAIKAN UNTUK TANGGAL
-        activeTahunStr = data.tahun;     // <-- PERBAIKAN UNTUK TANGGAL
+        activeBulanStr = data.nama_bulan; 
+        activeTahunStr = data.tahun;     
         document.getElementById('bulan-aktif-display').textContent = `${data.nama_bulan} ${data.tahun}`;
         loadDashboardMetrics();
     } else {
@@ -221,14 +202,14 @@ async function handleHapusBulan(id) {
 async function handleSetBulanAktif(id, nama, tahun) {
     await fetch(`api/bulan_crud.php?action=set_active&id_bulan=${id}`);
     activeBulanId = id;
-    activeBulanStr = nama; // <-- PERBAIKAN UNTUK TANGGAL
-    activeTahunStr = tahun; // <-- PERBAIKAN UNTUK TANGGAL
+    activeBulanStr = nama; 
+    activeTahunStr = tahun; 
     document.getElementById('bulan-aktif-display').textContent = `${nama} ${tahun}`;
     loadBulan();
     loadDashboardMetrics();
 }
 
-// --- METRIK & TRANSAKSI ---
+// METRIK & TRANSAKSI
 async function loadDashboardMetrics() {
     if (!activeBulanId) {
         document.getElementById('metric-pendapatan').textContent = formatRupiah(0);
@@ -243,7 +224,7 @@ async function loadDashboardMetrics() {
     document.getElementById('metric-sisa').textContent = formatRupiah(data.sisa);
 }
 
-// FUNGSI INI SUDAH TERMASUK 'EDIT' DAN 'JUMLAH TOTAL'
+// FUNGSI 'EDIT' DAN 'JUMLAH TOTAL'
 async function loadTransaksi() {
     if (!activeBulanId) return;
 
@@ -263,7 +244,7 @@ async function loadTransaksi() {
                 <td>${t.keterangan}</td>
                 <td>${t.jumlah}</td>
                 <td>${formatRupiah(t.total)}</td>
-                <td>
+                <td class="button-container">
                     <button class="btn btn-aksi btn-secondary" onclick="openEditModal(${t.id_pendapatan}, 'pendapatan')">Edit</button>
                     <button class="btn-aksi btn-aksi-danger" onclick="handleHapusTransaksi(${t.id_pendapatan}, 'pendapatan')">Hapus</button>
                 </td>
@@ -283,7 +264,7 @@ async function loadTransaksi() {
                 <td>${t.keterangan}</td>
                 <td>${t.jumlah}</td>
                 <td>${formatRupiah(t.total)}</td>
-                <td>
+                <td class="button-container">
                     <button class="btn btn-aksi btn-secondary" onclick="openEditModal(${t.id_pengeluaran}, 'pengeluaran')">Edit</button>
                     <button class="btn-aksi btn-aksi-danger" onclick="handleHapusTransaksi(${t.id_pengeluaran}, 'pengeluaran')">Hapus</button>
                 </td>
@@ -294,7 +275,7 @@ async function loadTransaksi() {
     document.getElementById('total-pengeluaran-footer').textContent = formatRupiah(totalPengeluaran);
 }
 
-// FUNGSI INI SUDAH TERMASUK 'TANGGAL' DAN 'HARGA' FIX
+// FUNGSI 'TANGGAL' DAN 'HARGA' 
 async function handleTambahTransaksi(e, type) {
     e.preventDefault();
     if (!activeBulanId) {
@@ -333,18 +314,16 @@ async function handleHapusTransaksi(id, type) {
     loadDashboardMetrics();
 }
 
-// --- FUNGSI MODAL EDIT ---
+// FUNGSI MODAL EDIT
 function closeEditModal() {
     document.getElementById('editModal').style.display = 'none';
 }
 
-// INI FUNGSI PENTING YANG DIPERBAIKI (HARGA DENGAN TITIK)
+
 async function openEditModal(id, type) {
-    // 1. Ambil data
     const response = await fetch(`api/transaksi_crud.php?type=${type}&id=${id}`);
     const data = await response.json();
 
-    // 2. Isi data biasa
     const hari = new Date(data.tanggal).getDate();
     document.getElementById('edit_id_transaksi').value = id;
     document.getElementById('edit_tipe_transaksi').value = type;
@@ -352,25 +331,17 @@ async function openEditModal(id, type) {
     document.getElementById('edit_keterangan').value = data.keterangan;
     document.getElementById('edit_jumlah').value = data.jumlah;
     
-    // --- INI PERBAIKAN FINAL (KITA PAKAI CARA POTONG STRING) ---
     const hargaInput = document.getElementById('edit_harga');
     
-    // 1. Ambil data harga (misal: "120000.00")
-    // 2. Potong di karakter '.', dan ambil bagian pertamanya: "120000"
     const hargaBersih = data.harga.split('.')[0]; 
     
-    // 3. Set nilainya ke input: "120000"
     hargaInput.value = hargaBersih;
     
-    // 4. Panggil fungsi formatRupiah, yang akan mengubah "120000" -> "120.000"
     formatInputRupiah(hargaInput); 
-    // --- BATAS PERBAIKAN ---
 
-    // 5. Tampilkan modal
     document.getElementById('editModal').style.display = 'flex';
 }
 
-// FUNGSI INI JUGA PENTING UNTUK 'SIMPAN'
 async function handleUpdateForm(e) {
     e.preventDefault();
     const id = document.getElementById('edit_id_transaksi').value;
@@ -386,11 +357,11 @@ async function handleUpdateForm(e) {
     const tanggalLengkap = `${tahun}-${bulanAngka}-${String(hari).padStart(2, '0')}`;
 
     const data = {
-        id_transaksi: id, // Ini penanda bahwa kita sedang meng-update
+        id_transaksi: id, 
         tanggal: tanggalLengkap,
         keterangan: document.getElementById('edit_keterangan').value,
         jumlah: document.getElementById('edit_jumlah').value,
-        harga: document.getElementById('edit_harga').value.replace(/\./g, ''), // Hapus titik
+        harga: document.getElementById('edit_harga').value.replace(/\./g, ''), 
     };
 
     await fetch(`api/transaksi_crud.php?type=${type}`, {
@@ -404,7 +375,7 @@ async function handleUpdateForm(e) {
 }
 
 
-// --- KELOLA PELANGGAN ---
+// KELOLA PELANGGAN
 async function loadPelanggan() {
     const response = await fetch('api/pelanggan_crud.php');
     const data = await response.json();
@@ -419,7 +390,7 @@ async function loadPelanggan() {
             <tr>
                 <td>${p.nama_pelanggan}</td>
                 <td>${p.nomor_hp}</td>
-                <td>
+                <td class="button-container">
                     <button class="btn btn-aksi btn-secondary" onclick="openTrackRecordModal(${p.id_pelanggan}, ${namaPelanggan})">Pesanan</button>
                     <button class="btn btn-aksi" onclick="openEditPelangganModal(${p.id_pelanggan})">Edit</button>
                     <button class="btn-aksi btn-aksi-danger" onclick="handleHapusPelanggan(${p.id_pelanggan})">Hapus</button>
@@ -448,7 +419,7 @@ async function handleHapusPelanggan(id) {
     loadPelanggan();
 }
 
-// --- FUNGSI BARU UNTUK EDIT PELANGGAN ---
+// FUNGSI EDIT PELANGGAN
 function closeEditPelangganModal() {
     document.getElementById('editPelangganModal').style.display = 'none';
 }
@@ -478,7 +449,7 @@ async function handleUpdatePelanggan(e) {
     loadPelanggan();
 }
 
-// --- FUNGSI BARU UNTUK TRACK RECORD ---
+// FUNGSI TRACK RECORD
 function closeTrackRecordModal() {
     document.getElementById('trackRecordModal').style.display = 'none';
 }
@@ -537,7 +508,7 @@ async function openTrackRecordModal(id, nama) {
     contentDiv.innerHTML = tableHTML;
 }
 
-// --- KELOLA PESANAN ---
+// KELOLA PESANAN
 async function loadPelangganOptions() {
     const response = await fetch('api/pelanggan_crud.php');
     const data = await response.json();
@@ -612,7 +583,7 @@ async function handleTambahPesanan(e) {
     loadDashboardMetrics();
 }
 
-// --- EKSPOR ---
+// EKSPOR
 function handleExport(type) {
     if (!activeBulanId) {
         alert('Silakan pilih bulan aktif terlebih dahulu.');
@@ -621,7 +592,6 @@ function handleExport(type) {
     window.open(`api/export.php?type=${type}`, '_blank');
 }
 
-// --- Helper untuk mengekspos fungsi ke HTML ---
 window.handleHapusBulan = handleHapusBulan;
 window.handleSetBulanAktif = handleSetBulanAktif;
 window.handleHapusTransaksi = handleHapusTransaksi;

@@ -1,5 +1,5 @@
 <?php
-// Sesi 2: API untuk CRUD Pesanan (otomatis masuk ke Pendapatan)
+// API untuk CRUD Pesanan 
 require 'config.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
@@ -11,7 +11,6 @@ if (!$id_bulan) {
 
 switch ($method) {
     case 'GET':
-        // Ambil data pesanan DAN nama pelanggan menggunakan JOIN
         $stmt = $pdo->prepare("
             SELECT p.*, pl.nama_pelanggan 
             FROM pesanan p
@@ -52,12 +51,10 @@ switch ($method) {
                 $data['jumlah'], $data['harga'], $total
             ]);
 
-            // Jika keduanya sukses, commit transaksi
             $pdo->commit();
             json_response(['success' => true, 'message' => 'Pesanan berhasil ditambahkan dan dicatat sebagai pendapatan.']);
 
         } catch (Exception $e) {
-            // Jika ada error, batalkan semua
             $pdo->rollBack();
             json_response(['success' => false, 'message' => 'Gagal menyimpan data: ' . $e->getMessage()], 500);
         }

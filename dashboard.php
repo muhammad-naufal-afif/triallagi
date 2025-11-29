@@ -38,7 +38,7 @@ if (!isset($_SESSION['admin_logged_in'])) {
 
             
 
-                <h2>Selamat Datang, Admin!</h2>
+                <h2>Selamat Datang!</h2>
                 <div class="current-month">
                     Bulan Aktif: <strong id="bulan-aktif-display">Belum Dipilih</strong>
                 </div>
@@ -92,7 +92,7 @@ if (!isset($_SESSION['admin_logged_in'])) {
                         <form id="formTambahPendapatan" class="form-grid">
                             <input type="number" id="pendapatan_tanggal" placeholder="Tanggal (1-31)" min="1" max="31" required>
                             <input type="text" id="pendapatan_keterangan" placeholder="Keterangan" required>
-                            <input type="number" id="pendapatan_jumlah" placeholder="Jumlah" value="1" required>
+                            <input type="number" id="pendapatan_jumlah" placeholder="Jumlah" min="1" value="1" required>
                             <input type="text" id="pendapatan_harga" placeholder="Harga/Nominal" inputmode="numeric" required>
                             <button type="submit" class="btn">Tambah</button>
                         </form>
@@ -120,7 +120,7 @@ if (!isset($_SESSION['admin_logged_in'])) {
                         <form id="formTambahPengeluaran" class="form-grid">
                             <input type="number" id="pengeluaran_tanggal" placeholder="Tanggal (1-31)" min="1" max="31" required>
                             <input type="text" id="pengeluaran_keterangan" placeholder="Keterangan" required>
-                            <input type="number" id="pengeluaran_jumlah" placeholder="Jumlah" value="1" required>
+                            <input type="number" id="pengeluaran_jumlah" placeholder="Jumlah" min="1" value="1" required>
                             <input type="text" id="pengeluaran_harga" placeholder="Harga/Nominal" inputmode="numeric" required>
                             <button type="submit" class="btn btn-danger">Tambah</button>
                         </form>
@@ -177,7 +177,7 @@ if (!isset($_SESSION['admin_logged_in'])) {
                         </select>
                     <input type="number" id="pesanan_tanggal" placeholder="Tanggal (1-31)" min="1" max="31" required>
                     <input type="text" id="pesanan_jenis" placeholder="Jenis Pesanan" required>
-                    <input type="number" id="pesanan_jumlah" placeholder="Jumlah" value="1" required>
+                    <input type="number" id="pesanan_jumlah" placeholder="Jumlah" min="1" value="1" required>
                     <input type="text" id="pesanan_harga" placeholder="Harga" inputmode="numeric" required>
                     <button type="submit" class="btn">Tambah Pesanan</TCA></button>
                 </form>
