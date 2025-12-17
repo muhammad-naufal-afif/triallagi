@@ -1,5 +1,5 @@
 <?php
-// API untuk CRUD Pesanan 
+// API untuk CRUD Pesanan (Versi Simpel dengan Link ID)
 require 'config.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
@@ -26,12 +26,12 @@ switch ($method) {
     case 'POST':
         $data = json_decode(file_get_contents('php://input'), true);
         $total = $data['jumlah'] * $data['harga'];
-        $keterangan_pendapatan = "Pesanan dari " . $data['nama_pelanggan_text'] . " (" . $data['jenis_pesanan'] . ")";
+        // Keterangan sekarang lebih simpel karena Nama Pelanggan nanti ada kolom sendiri
+        $keterangan_pendapatan = "Pesanan: " . $data['jenis_pesanan']; 
 
-        // Mulai Transaksi Database
         $pdo->beginTransaction();
         try {
-            // 1. Masukkan ke tabel 'pesanan'
+            // 1. Simpan Pesanan
             $stmt_pesanan = $pdo->prepare("
                 INSERT INTO pesanan (id_pelanggan, id_bulan, tanggal, jenis_pesanan, jumlah, harga, total) 
                 VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -40,23 +40,26 @@ switch ($method) {
                 $data['id_pelanggan'], $id_bulan, $data['tanggal'], 
                 $data['jenis_pesanan'], $data['jumlah'], $data['harga'], $total
             ]);
+            
+            // Ambil ID pesanan yang baru dibuat
+            $id_pesanan_baru = $pdo->lastInsertId();
 
-            // 2. Masukkan ke tabel 'pendapatan'
+            // 2. Simpan Pendapatan (DENGAN ID_PESANAN)
             $stmt_pendapatan = $pdo->prepare("
-                INSERT INTO pendapatan (id_bulan, tanggal, keterangan, jumlah, harga, total) 
-                VALUES (?, ?, ?, ?, ?, ?)
+                INSERT INTO pendapatan (id_bulan, tanggal, keterangan, jumlah, harga, total, id_pesanan) 
+                VALUES (?, ?, ?, ?, ?, ?, ?)
             ");
             $stmt_pendapatan->execute([
                 $id_bulan, $data['tanggal'], $keterangan_pendapatan, 
-                $data['jumlah'], $data['harga'], $total
+                $data['jumlah'], $data['harga'], $total, $id_pesanan_baru
             ]);
 
             $pdo->commit();
-            json_response(['success' => true, 'message' => 'Pesanan berhasil ditambahkan dan dicatat sebagai pendapatan.']);
+            json_response(['success' => true, 'message' => 'Pesanan berhasil disimpan.']);
 
         } catch (Exception $e) {
             $pdo->rollBack();
-            json_response(['success' => false, 'message' => 'Gagal menyimpan data: ' . $e->getMessage()], 500);
+            json_response(['success' => false, 'message' => 'Gagal: ' . $e->getMessage()], 500);
         }
         break;
 }

@@ -430,42 +430,41 @@ tfoot td {
     margin-top: 0;
 }
 
+/* --- TAMPILAN KHUSUS MOBILE (HP) - FINAL FIX --- */
 @media (max-width: 768px) {
 
-    /* 2. Sidebar: WAJIB HILANG TOTAL (-250px) */
+    /* 1. Sidebar: Sembunyi */
     .sidebar {
         position: fixed;
         left: -250px !important;
-        /* Paksa keluar layar */
         top: 0;
         height: 100%;
         width: 240px !important;
-        /* Lebar normal saat muncul */
         z-index: 9999;
         transition: left 0.3s ease;
         box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
     }
 
-    /* Class biar sidebar muncul pas diklik */
     .sidebar.show {
         left: 0 !important;
     }
 
-    /* 3. Munculkan tombol menu */
+    /* 2. Tombol Menu */
     .btn-toggle {
         display: block;
     }
 
-    /* 4. Konten Utama: FULL WIDTH 100% */
+    /* 3. Konten Utama: Full Width & Fix Background */
     .main-content {
         margin-left: 0 !important;
-        /* Paksa margin 0 */
         width: 100% !important;
-        /* Lebar penuh */
+        min-height: 100vh;
+        height: auto;
         padding: 0;
+        overflow-x: hidden;
+        /* Mencegah geser halaman */
     }
 
-    /* Header susun ke bawah */
     .main-header {
         flex-direction: column;
         align-items: flex-start;
@@ -473,7 +472,7 @@ tfoot td {
         padding: 1rem;
     }
 
-    /* 5. Paksa Semua Form Jadi 1 Kolom */
+    /* 4. Grid 1 Kolom */
     .metrics,
     .transaksi-container,
     .form-grid,
@@ -482,26 +481,32 @@ tfoot td {
         gap: 1rem;
     }
 
-    /* 6. Perbaikan Tabel (Biar bisa digeser) */
+    /* 5. FIX TABEL MACET (Grid Child Constraint) */
+    .transaksi-col {
+        min-width: 0;
+        /* WAJIB ADA: Biar grid gak melebar */
+        width: 100%;
+    }
+
     .table-container {
         width: 100%;
         overflow-x: auto;
+        /* Scrollbar muncul */
         display: block;
         white-space: nowrap;
-        background: white;
-        /* Pastikan background putih */
+        padding-bottom: 5px;
     }
 
-    /* 7. Modal Full Screen */
+    /* 6. Modal Full Screen */
     .modal-content,
     .modal-content.modal-lg {
         width: 90%;
-        margin: 5%;
+        margin: 5% auto;
         max-height: 80vh;
         overflow-y: auto;
     }
 
-    /* Overlay Gelap */
+    /* Overlay */
     .sidebar-overlay {
         display: none;
         position: fixed;

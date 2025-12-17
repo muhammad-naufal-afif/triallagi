@@ -158,12 +158,11 @@ function setupNavigation() {
             
             switch (targetId) {
                 case 'bulan': loadBulan(); break;
-                case 'transaksi': loadTransaksi(); break;
-                case 'pelanggan': loadPelanggan(); break;
-                case 'pesanan':
-                    loadPelangganOptions();
-                    loadPesanan();
+                case 'transaksi': 
+                    loadTransaksi(); 
+                    loadPelangganOptions(); // <-- TAMBAHKAN INI (Biar dropdown pelanggan muncul)
                     break;
+                case 'pelanggan': loadPelanggan(); break;
             }
         });
     });
@@ -253,24 +252,36 @@ async function loadDashboardMetrics() {
     document.getElementById('metric-sisa').textContent = formatRupiah(data.sisa);
 }
 
-// FUNGSI 'EDIT' DAN 'JUMLAH TOTAL'
+// GANTI FUNGSI loadTransaksi (VERSI GABUNG TABEL)
 async function loadTransaksi() {
     if (!activeBulanId) return;
 
     let totalPendapatan = 0;
     let totalPengeluaran = 0;
 
-    // Load Pendapatan
+    // --- 1. LOAD PENDAPATAN (SEMUA JADI SATU) ---
     const resPendapatan = await fetch(`api/transaksi_crud.php?type=pendapatan`);
     const dataPendapatan = await resPendapatan.json();
     const tbodyPendapatan = document.getElementById('tabelPendapatan').querySelector('tbody');
     tbodyPendapatan.innerHTML = '';
+    
     dataPendapatan.forEach(t => {
         totalPendapatan += parseFloat(t.total);
+        
+        // Cek apakah ini Pesanan (punya nama pelanggan) atau Manual
+        // Kalau manual, kita kasih strip (-) biar rapi
+        let namaPelangganDisplay = '-';
+        let stylePelanggan = '';
+
+        if (t.nama_pelanggan) {
+            namaPelangganDisplay = t.nama_pelanggan;
+            stylePelanggan = 'font-weight:bold; color:#2196F3;'; // Biru biar beda
+        }
+
         tbodyPendapatan.innerHTML += `
             <tr>
                 <td>${t.tanggal}</td>
-                <td>${t.keterangan}</td>
+                <td style="${stylePelanggan}">${namaPelangganDisplay}</td> <td>${t.keterangan}</td>
                 <td>${t.jumlah}</td>
                 <td>${formatRupiah(t.total)}</td>
                 <td class="button-container">
@@ -280,11 +291,12 @@ async function loadTransaksi() {
             </tr>`;
     });
 
-    // Load Pengeluaran
+    // --- 2. LOAD PENGELUARAN (TETAP SAMA) ---
     const resPengeluaran = await fetch(`api/transaksi_crud.php?type=pengeluaran`);
     const dataPengeluaran = await resPengeluaran.json();
     const tbodyPengeluaran = document.getElementById('tabelPengeluaran').querySelector('tbody');
     tbodyPengeluaran.innerHTML = '';
+    
     dataPengeluaran.forEach(t => {
         totalPengeluaran += parseFloat(t.total);
         tbodyPengeluaran.innerHTML += `
@@ -300,6 +312,7 @@ async function loadTransaksi() {
             </tr>`;
     });
 
+    // Update Footer
     document.getElementById('total-pendapatan-footer').textContent = formatRupiah(totalPendapatan);
     document.getElementById('total-pengeluaran-footer').textContent = formatRupiah(totalPengeluaran);
 }
@@ -484,7 +497,7 @@ function closeTrackRecordModal() {
 }
 
 async function openTrackRecordModal(id, nama) {
-    document.getElementById('trackRecordHeader').textContent = `Track Record Pesanan: ${nama}`;
+    document.getElementById('trackRecordHeader').textContent = `Riwayat Pesanan : ${nama}`;
     const contentDiv = document.getElementById('trackRecordContent');
     contentDiv.innerHTML = '<p>Memuat data...</p>';
     document.getElementById('trackRecordModal').style.display = 'flex';
@@ -575,30 +588,18 @@ async function handleTambahPesanan(e) {
     const select = document.getElementById('pesanan_pelanggan');
     const selectedOption = select.options[select.selectedIndex];
     
-    const bulanMap = {
-        "JANUARI": "01", "FEBRUARI": "02", "MARET": "03", "APRIL": "04", "MEI": "05", "JUNI": "06",
-        "JULI": "07", "AGUSTUS": "08", "SEPTEMBER": "09", "OKTOBER": "10", "NOVEMBER": "11", "DESEMBER": "12"
-    };
-    
-    let tanggalLengkapPesanan;
-    const tanggalInput = document.getElementById('pesanan_tanggal');
-    const tahun = activeTahunStr;
+    const bulanMap = { "JANUARI": "01", "FEBRUARI": "02", "MARET": "03", "APRIL": "04", "MEI": "05", "JUNI": "06", "JULI": "07", "AGUSTUS": "08", "SEPTEMBER": "09", "OKTOBER": "10", "NOVEMBER": "11", "DESEMBER": "12" };
+    const hari = document.getElementById('pesanan_tanggal').value;
     const bulanAngka = bulanMap[activeBulanStr.toUpperCase()];
-    
-    if (tanggalInput.type === 'date') {
-        tanggalLengkapPesanan = tanggalInput.value;
-    } else {
-        const hariPesanan = tanggalInput.value;
-        tanggalLengkapPesanan = `${tahun}-${bulanAngka}-${String(hariPesanan).padStart(2, '0')}`;
-    }
+    const tanggalLengkap = `${activeTahunStr}-${bulanAngka}-${String(hari).padStart(2, '0')}`;
 
     const data = {
         id_pelanggan: select.value,
         nama_pelanggan_text: selectedOption.text,
-        tanggal: tanggalLengkapPesanan,
+        tanggal: tanggalLengkap,
         jenis_pesanan: document.getElementById('pesanan_jenis').value,
         jumlah: document.getElementById('pesanan_jumlah').value,
-        harga: document.getElementById('pesanan_harga').value.replace(/\./g, ''), // Hapus titik
+        harga: document.getElementById('pesanan_harga').value.replace(/\./g, ''),
     };
 
     await fetch('api/pesanan_crud.php', {
@@ -607,8 +608,9 @@ async function handleTambahPesanan(e) {
     });
     
     e.target.reset();
-    loadPesanan();
-    loadTransaksi();
+    
+    // REFRESH TABEL TRANSAKSI (Karena pesanan masuk ke situ sekarang)
+    loadTransaksi(); 
     loadDashboardMetrics();
 }
 

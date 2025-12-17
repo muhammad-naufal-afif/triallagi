@@ -26,9 +26,8 @@ if (!isset($_SESSION['admin_logged_in'])) {
             <ul>
                 <li class="active"><a href="#dashboard"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
                 <li><a href="#bulan"><i class="fas fa-calendar-alt"></i><span>Kelola Bulan</span></a></li>
-                <li><a href="#transaksi"><i class="fas fa-exchange-alt"></i><span>Pendapatan/Pengeluaran</span></a></li>
+                <li><a href="#transaksi"><i class="fas fa-exchange-alt"></i><span>Pendapatan & Pengeluaran</span></a></li>
                 <li><a href="#pelanggan"><i class="fas fa-users"></i><span>Data Pelanggan</span></a></li>
-                <li><a href="#pesanan"><i class="fas fa-shopping-cart"></i><span>Data Pesanan</span></a></li>
                 <li><a href="logout.php"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a></li>
             </ul>
         </nav>
@@ -40,10 +39,10 @@ if (!isset($_SESSION['admin_logged_in'])) {
                     <button id="sidebarToggle" class="btn-toggle">
                         <i class="fas fa-bars"></i>
                     </button>
-                    <h2>Selamat Datang!</h2>
+                    <h2>Halo!</h2>
                 </div>
                 <div class="current-month">
-                    Bulan Aktif: <strong id="bulan-aktif-display">Belum Dipilih</strong>
+                    Bulan Aktif : <strong id="bulan-aktif-display">Belum Dipilih</strong>
                 </div>
             </header>
                 <section class="metrics" id="dashboard">
@@ -63,7 +62,22 @@ if (!isset($_SESSION['admin_logged_in'])) {
             <section id="bulan" class="content-section" style="display:none;">
                 <h3>Kelola Bulan</h3>
                 <form id="formTambahBulan" class="form-grid">
-                    <input type="text" id="nama_bulan" placeholder="Nama Bulan (cth: Januari)" required>
+                    <select id="nama_bulan" required style="padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px;">
+                        <option value="" disabled selected>-- Pilih Bulan --</option>
+                        <option value="Januari">Januari</option>
+                        <option value="Februari">Februari</option>
+                        <option value="Maret">Maret</option>
+                        <option value="April">April</option>
+                        <option value="Mei">Mei</option>
+                        <option value="Juni">Juni</option>
+                        <option value="Juli">Juli</option>
+                        <option value="Agustus">Agustus</option>
+                        <option value="September">September</option>
+                        <option value="Oktober">Oktober</option>
+                        <option value="November">November</option>
+                        <option value="Desember">Desember</option>
+                    </select>
+                    
                     <input type="number" id="tahun" placeholder="Tahun (cth: 2024)" required>
                     <button type="submit" class="btn">Tambah Bulan</button>
                 </form>
@@ -91,27 +105,45 @@ if (!isset($_SESSION['admin_logged_in'])) {
                 
                 <div class="transaksi-container">
                     <div class="transaksi-col">
-                        <h4>Tambah Pendapatan</h4>
+                        
+                        <h4 style="color: #2196F3; border-bottom-color: #2196F3;">Input Pesanan Baru</h4>
+                        <form id="formTambahPesanan" class="form-grid-pesanan" style="display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 2rem;">
+                            <select id="pesanan_pelanggan" required style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px;">
+                                <option value="">-- Pilih Pelanggan --</option>
+                            </select>
+                            <input type="number" id="pesanan_tanggal" placeholder="Tanggal (1-31)" min="1" max="31" required>
+                            <input type="text" id="pesanan_jenis" placeholder="Jenis Pesanan" required>
+                            <div style="display: flex; gap: 10px;">
+                                <input type="number" id="pesanan_jumlah" placeholder="Jml" min="1" value="1" required style="flex: 1;">
+                                <input type="text" id="pesanan_harga" placeholder="Harga Satuan" inputmode="numeric" required style="flex: 2;">
+                            </div>
+                            <button type="submit" class="btn" style="background-color: #2196F3;">Simpan Pesanan</button>
+                        </form>
+
+                        <h4>Pendapatan</h4>
                         <form id="formTambahPendapatan" class="form-grid">
                             <input type="number" id="pendapatan_tanggal" placeholder="Tanggal (1-31)" min="1" max="31" required>
-                            <input type="text" id="pendapatan_keterangan" placeholder="Keterangan" required>
-                            <input type="number" id="pendapatan_jumlah" placeholder="Jumlah" min="1" value="1" required>
-                            <input type="text" id="pendapatan_harga" placeholder="Harga/Nominal" inputmode="numeric" required>
-                            <button type="submit" class="btn">Tambah</button>
+                            <input type="text" id="pendapatan_keterangan" placeholder="Ket (cth: Jual Kertas)" required>
+                            <input type="number" id="pendapatan_jumlah" placeholder="Jml" min="1" value="1" required>
+                            <input type="text" id="pendapatan_harga" placeholder="Nominal" inputmode="numeric" required>
+                            <button type="submit" class="btn">Simpan</button>
                         </form>
+
+                        <h4 style="margin-top: 2rem;">Riwayat Semua Pendapatan</h4>
                         <div class="table-container">
                             <table id="tabelPendapatan">
                                 <thead>
                                     <tr>
-                                        <th>Tanggal</th>
-                                        <th>Keterangan</th>
-                                        <th>Jumlah</th> <th>Total</th>
+                                        <th>Tgl</th>
+                                        <th>Pelanggan</th> <th>Keterangan</th>
+                                        <th>Jumlah</th> 
+                                        <th>Total</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
-                                <tbody></tbody>
-                                <tfoot> <tr>
-                                        <td colspan="3"><strong>Jumlah Total Pendapatan</strong></td>
+                                <tbody></tbody> <tfoot> 
+                                    <tr>
+                                        <td colspan="4"><strong>Total Semua Pendapatan</strong></td>
                                         <td id="total-pendapatan-footer" colspan="2"><strong>Rp 0</strong></td>
                                     </tr>
                                 </tfoot>
@@ -119,13 +151,13 @@ if (!isset($_SESSION['admin_logged_in'])) {
                         </div>
                     </div>
                     <div class="transaksi-col">
-                        <h4>Tambah Pengeluaran</h4>
+                        <h4>Pengeluaran</h4>
                         <form id="formTambahPengeluaran" class="form-grid">
                             <input type="number" id="pengeluaran_tanggal" placeholder="Tanggal (1-31)" min="1" max="31" required>
                             <input type="text" id="pengeluaran_keterangan" placeholder="Keterangan" required>
                             <input type="number" id="pengeluaran_jumlah" placeholder="Jumlah" min="1" value="1" required>
                             <input type="text" id="pengeluaran_harga" placeholder="Harga/Nominal" inputmode="numeric" required>
-                            <button type="submit" class="btn btn-danger">Tambah</button>
+                            <button type="submit" class="btn btn-danger">Simpan</button>
                         </form>
                         <div class="table-container">
                             <table id="tabelPengeluaran">
@@ -170,40 +202,10 @@ if (!isset($_SESSION['admin_logged_in'])) {
                     </table>
                 </div>
             </section>
-            
-            <section id="pesanan" class="content-section" style="display:none;">
-                <h3>Kelola Data Pesanan</h3>
-                <p>Menambah pesanan di sini akan otomatis masuk ke data **Pendapatan**.</p>
-                <form id="formTambahPesanan" class="form-grid-pesanan">
-                    <select id="pesanan_pelanggan" required>
-                        <option value="">-- Pilih Pelanggan --</option>
-                        </select>
-                    <input type="number" id="pesanan_tanggal" placeholder="Tanggal (1-31)" min="1" max="31" required>
-                    <input type="text" id="pesanan_jenis" placeholder="Jenis Pesanan" required>
-                    <input type="number" id="pesanan_jumlah" placeholder="Jumlah" min="1" value="1" required>
-                    <input type="text" id="pesanan_harga" placeholder="Harga" inputmode="numeric" required>
-                    <button type="submit" class="btn">Tambah Pesanan</TCA></button>
-                </form>
-                <div class="table-container">
-                    <table id="tabelPesanan">
-                        <thead>
-                            <tr>
-                                <th>Tanggal</th>
-                                <th>Nama Pelanggan</th>
-                                <th>Jenis Pesanan</th>
-                                <th>Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            </tbody>
-                    </table>
-                </div>
-            </section>
-
         </main>
     </div>
 
-    <script src="assets/js/main.js"></script> 
+    <script src="assets/js/main.js?v=2"></script>
 
     <div id="editModal" class="modal-overlay" style="display:none;">
         <div class="modal-content">
@@ -258,7 +260,7 @@ if (!isset($_SESSION['admin_logged_in'])) {
     <div id="trackRecordModal" class="modal-overlay" style="display:none;">
         <div class="modal-content modal-lg">
             <span class="modal-close" id="trackRecordModalCloseBtn">&times;</span>
-            <h3 id="trackRecordHeader">Track Record Pesanan</h3>
+            <h3 id="trackRecordHeader">Riwayat Pesanan</h3>
             <div class="table-container" id="trackRecordContent">
                 </div>
         </div>
