@@ -111,7 +111,12 @@ if (!isset($_SESSION['admin_logged_in'])) {
                             <select id="pesanan_pelanggan" required style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px;">
                                 <option value="">-- Pilih Pelanggan --</option>
                             </select>
-                            <input type="number" id="pesanan_tanggal" placeholder="Tanggal (1-31)" min="1" max="31" required>
+                            
+                            <select id="pesanan_tanggal" required style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px;">
+                                <option value="" disabled selected>-- Tgl --</option>
+                                <?php for($i=1; $i<=31; $i++){ echo "<option value='$i'>$i</option>"; } ?>
+                            </select>
+
                             <input type="text" id="pesanan_jenis" placeholder="Jenis Pesanan" required>
                             <div style="display: flex; gap: 10px;">
                                 <input type="number" id="pesanan_jumlah" placeholder="Jml" min="1" value="1" required style="flex: 1;">
@@ -122,7 +127,11 @@ if (!isset($_SESSION['admin_logged_in'])) {
 
                         <h4>Pendapatan</h4>
                         <form id="formTambahPendapatan" class="form-grid">
-                            <input type="number" id="pendapatan_tanggal" placeholder="Tanggal (1-31)" min="1" max="31" required>
+                            <select id="pendapatan_tanggal" required style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px;">
+                                <option value="" disabled selected>-- Tgl --</option>
+                                <?php for($i=1; $i<=31; $i++){ echo "<option value='$i'>$i</option>"; } ?>
+                            </select>
+
                             <input type="text" id="pendapatan_keterangan" placeholder="Ket (cth: Jual Kertas)" required>
                             <input type="number" id="pendapatan_jumlah" placeholder="Jml" min="1" value="1" required>
                             <input type="text" id="pendapatan_harga" placeholder="Nominal" inputmode="numeric" required>
@@ -153,7 +162,11 @@ if (!isset($_SESSION['admin_logged_in'])) {
                     <div class="transaksi-col">
                         <h4>Pengeluaran</h4>
                         <form id="formTambahPengeluaran" class="form-grid">
-                            <input type="number" id="pengeluaran_tanggal" placeholder="Tanggal (1-31)" min="1" max="31" required>
+                            <select id="pengeluaran_tanggal" required style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px;">
+                                <option value="" disabled selected>-- Tgl --</option>
+                                <?php for($i=1; $i<=31; $i++){ echo "<option value='$i'>$i</option>"; } ?>
+                            </select>
+
                             <input type="text" id="pengeluaran_keterangan" placeholder="Keterangan" required>
                             <input type="number" id="pengeluaran_jumlah" placeholder="Jumlah" min="1" value="1" required>
                             <input type="text" id="pengeluaran_harga" placeholder="Harga/Nominal" inputmode="numeric" required>
@@ -218,7 +231,9 @@ if (!isset($_SESSION['admin_logged_in'])) {
 
                 <div class="input-group">
                     <label for="edit_tanggal">Tanggal (1-31)</label>
-                    <input type="number" id="edit_tanggal" min="1" max="31" required>
+                    <select id="edit_tanggal" required style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px;">
+                        <?php for($i=1; $i<=31; $i++){ echo "<option value='$i'>$i</option>"; } ?>
+                    </select>
                 </div>
                 <div class="input-group">
                     <label for="edit_keterangan">Keterangan</label>
@@ -266,4 +281,4 @@ if (!isset($_SESSION['admin_logged_in'])) {
         </div>
     </div>
     </body>
-</html>>
+</html>
